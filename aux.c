@@ -4,6 +4,30 @@
 
 #include "aux.h"
 
+long* gera_vetor(char *nome_arq){
+    // Vetor para armazenar TAM_CPFS CPFs
+    long *vetor = (long*)malloc(sizeof(long)*TAM_CPFS);
+    if (vetor == NULL) exit(1);
+
+    long aux; // Armazena o CPF
+    int indice = 0; // Guarda o índice no vetor de CPFs
+
+    // Abre o arquivo
+    FILE* arquivo = fopen(nome_arq, "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        exit(1);
+    }
+
+    // Guarda os CPFs no arquivo
+    while (fscanf(arquivo, " %ld", &aux) == 1) {
+        vetor[indice++] = aux;
+    }
+
+    // Retorna o vetor de CPFs
+    return vetor;
+}
+
 void exibe_vetor_long(long *vetor, int tamanho){
     for (int i=0; i<tamanho; i++){
         printf("%ld\n", vetor[i]);
@@ -16,7 +40,7 @@ void exibe_vetor_int(int *vetor, int tamanho){
     }
 }
 
-int* gera_primos(int range, int* tamanho) {
+int* gera_primos(int range, int* tamanho){
     bool* is_prime = malloc((range + 1) * sizeof(bool));
     if (is_prime == NULL) {
         printf("Erro ao alocar memória.\n");
@@ -63,139 +87,4 @@ int* gera_primos(int range, int* tamanho) {
     free(is_prime);
     *tamanho = count;  // Retorna o tamanho do vetor de primos encontrado
     return primos;
-}
-
-int formata_cpf(long cpf){
-    long soma = 0;
-    while (cpf > 0){
-        soma += cpf % 100;
-        cpf /= 100;
-    }
-    return soma % TAM;
-}
-
-int formata_cpf2(long cpf, int n){
-    long soma = 0;
-    for(int i=0; i<n; i++){
-        soma += cpf % 100;
-        cpf /= 100;
-    }
-    return soma % TAM;
-}
-
-void dobra_quadratica(long *vetor, int tamanho){
-
-    long hash[TAM];
-
-    for(int i=0; i<TAM; i++){
-        hash[i] = -1;
-    }
-
-    int indice, colisoes, tentativas;
-    colisoes = 0;
-
-    for(int i=0; i<tamanho; i++){
-        indice = formata_cpf(vetor[i]);
-        printf("%d\n\n", indice);
-        tentativas = 0;
-        while(hash[indice] != -1){
-            indice = (indice + tentativas * tentativas) % TAM;
-            tentativas++;
-            colisoes++;
-        }
-        hash[indice] = vetor[i];
-    }
-
-    // exibe_vetor(hash, TAM);
-
-    printf("Houveram %d colisões com o método de dobra e com o quadrático.\n\n", colisoes);
-}
-
-void dobra_quadratica2(long *vetor, int tamanho){
-
-    long hash[TAM];
-
-    for(int i=0; i<TAM; i++){
-        hash[i] = -1;
-    }
-
-    int indice, colisoes, tentativas, n;
-    colisoes = 0;
-
-    for(int i=0; i<tamanho; i++){
-        indice = formata_cpf2(vetor[i],1);
-        tentativas = 0;
-        n = 2;
-        while(hash[indice] != -1){
-            indice = (indice + tentativas * tentativas) % TAM;
-            tentativas++;
-            colisoes++;
-            if(hash[indice] != -1){
-                indice = formata_cpf2(vetor[i],n);
-            }
-            n++;
-        }
-        hash[indice] = vetor[i];
-    }
-
-    // exibe_vetor(hash, TAM);
-
-    printf("Houveram %d colisões com o método de dobra e com o quadrático 2.\n\n", colisoes);
-}
-
-void soma_um(long *vetor, int tamanho){
-
-    long hash[TAM];
-
-    for(int i=0; i<TAM; i++){
-        hash[i] = -1;
-    }
-
-    int indice, colisoes;
-    colisoes = 0;
-
-    for(int i=0; i<tamanho; i++){
-        indice = vetor[i] % TAM;
-        while(hash[indice] != -1){
-            indice++;
-            colisoes++;
-            if (indice >= TAM){
-                indice = 0;
-            }
-        }
-        hash[indice] = vetor[i];
-    }
-
-    // exibe_vetor(hash, TAM);
-
-    printf("Houveram %d colisões com o método soma um.\n\n", colisoes);
-}
-
-void multiplica_constante(long *vetor, int tamanho, const int constante){
-
-    long hash[TAM];
-
-    for(int i=0; i<TAM; i++){
-        hash[i] = -1;
-    }
-
-    int indice, colisoes;
-    colisoes = 0;
-
-    for(int i=0; i<tamanho; i++){
-        indice = (vetor[i] * constante) % TAM;
-        while(hash[indice] != -1){
-            indice++;
-            colisoes++;
-            if (indice >= TAM){
-                indice = 0;
-            }
-        }
-        hash[indice] = vetor[i];
-    }
-
-    // exibe_vetor(hash, TAM);
-
-    if (colisoes<2000)
-        printf("Houveram %d colisões multiplicando por %d.\n\n", colisoes, constante);
 }
