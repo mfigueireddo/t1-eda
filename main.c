@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "aux.h"
 
@@ -19,6 +20,17 @@ int main(void){
     while (fscanf(arquivo, " %ld", &aux) == 1) {
         vetor[indice++] = aux;
     }
+    
+    int tamanho;
+    int* primos = gera_primos(TAM, &tamanho);
+    
+    for(int i=0; i<tamanho; i++){
+        multiplica_constante(vetor, 1000, primos[i]);
+    }
 
-    soma_um(vetor, 1000);
+    // soma_um(vetor, 1000);
+
+    // dobra_quadratica(vetor, 1000);
+
+    // dobra_quadratica2(vetor, 1000);
 }
