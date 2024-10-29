@@ -88,3 +88,47 @@ int* gera_primos(int range, int* tamanho){
     *tamanho = count;  // Retorna o tamanho do vetor de primos encontrado
     return primos;
 }
+
+long formata_cpf(long cpf){
+    long aux;
+    long soma = 0;
+
+    for(int i=0; i<2; i++){
+        aux = cpf % 10000;
+        cpf /= 10000;
+
+        soma += aux;
+        soma %= 10000;
+    }
+
+    aux = cpf % 1000;
+    soma += aux;
+    soma %= 10000;
+
+    // Aplicar o módulo 1201 para obter o índice final
+    long indice = soma % (TAM_HASH);
+
+    return indice;
+}
+
+long formata_cpf2(long cpf){
+    long aux;
+    long soma = 0;
+
+    for(int i=0; i<2; i++){
+        aux = cpf % 10000;
+        cpf /= 10000;
+
+        soma += aux;
+        soma %= 10000;
+    }
+
+    aux = cpf % 1000;
+    soma += aux;
+    soma %= 10000;
+
+    // Aplicar o módulo 1201 para obter o índice final
+    long indice = 1 + soma % (TAM_HASH-1);
+
+    return indice;
+}
